@@ -1,0 +1,156 @@
+
+FROM rocker/rstudio:3.6.1
+
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+  libxml2-dev \
+  libcairo2-dev \
+  libsqlite3-dev \
+  libmariadbd-dev \
+  libmariadb-client-lgpl-dev \
+  libpq-dev \
+  libssh2-1-dev \
+  unixodbc-dev \
+  libsasl2-dev \
+  && install2.r --error \
+    --deps TRUE \
+    tidyverse \
+    dplyr \
+    devtools \
+    formatR \
+    remotes \
+    selectr \
+    caTools \
+    BiocManager 
+	#BiocVersion
+
+
+## bioc
+RUN rm -f /var/lib/dpkg/available && rm -rf  /var/cache/apt/*
+
+# issues with '/var/lib/dpkg/available' not found
+# this will recreate
+RUN dpkg --clear-avail
+
+# This is to avoid the error
+# 'debconf: unable to initialize frontend: Dialog'
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update apt-get
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends apt-utils \
+	&& apt-get install -y --no-install-recommends \
+	## Basic deps
+	gdb \
+	libxml2-dev \
+	python-pip \
+	libz-dev \
+	liblzma-dev \
+	libbz2-dev \
+	libpng-dev \
+	libmariadb-dev-compat \
+	## sys deps from bioc_full
+	pkg-config \
+	fortran77-compiler \
+	byacc \
+	automake \
+	curl \
+	## This section installs libraries
+	libpng-dev \
+	libnetcdf-dev \
+	libhdf5-serial-dev \
+	libfftw3-dev \
+	libopenbabel-dev \
+	libopenmpi-dev \
+	#libexempi8 \
+	libxt-dev \
+	#libgdal-dev \
+	libjpeg62-turbo-dev \
+	libcairo2-dev \
+	libtiff5-dev \
+	libreadline-dev \
+	libgsl0-dev \
+	#libgslcblas0 \
+	libgtk2.0-dev \
+	libgl1-mesa-dev \
+	libglu1-mesa-dev \
+	libgmp3-dev \
+	libhdf5-dev \
+	libncurses-dev \
+	libbz2-dev \
+	libxpm-dev \
+	liblapack-dev \
+	libv8-dev \
+	libgtkmm-2.4-dev \
+	libmpfr-dev \
+	libudunits2-dev \
+	libmodule-build-perl \
+	libapparmor-dev \
+	libgeos-dev \
+	libprotoc-dev \
+	librdf0-dev \
+	libmagick++-dev \
+	libsasl2-dev \
+	libpoppler-cpp-dev \
+	libprotobuf-dev \
+	libpq-dev \
+	libperl-dev \
+	## software - perl extentions and modules
+	libarchive-extract-perl \
+	libfile-copy-recursive-perl \
+	libcgi-pm-perl \
+	libdbi-perl \
+	libdbd-mysql-perl \
+	libxml-simple-perl \
+	## Databases and other software
+	sqlite \
+	openmpi-bin \
+	mpi-default-bin \
+	openmpi-common \
+	openmpi-doc \
+	tcl8.6-dev \
+	tk-dev \
+	default-jdk \
+	imagemagick \
+	tabix \
+	ggobi \
+	graphviz \
+	protobuf-compiler \
+	jags \
+	## Additional resources
+	xfonts-100dpi \
+	xfonts-75dpi \
+	biber \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+	
+
+
+## conda 
+RUN apt-get -qq -y install bzip2 \
+    && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -bfp / \
+    && rm -rf /tmp/miniconda.sh \
+    && conda install -y python=3 \
+    && conda update conda \
+    && apt-get -qq -y remove curl bzip2 \
+    && apt-get -qq -y autoremove \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+    && conda clean --all --yes
+
+ENV PATH /opt/conda/bin:$PATH
+
+COPY base.yml /root/
+COPY Rprofile-tmp $HOME/
+COPY Renviron-tmp $HOME/
+COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
+COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
+RUN conda init 
+RUN conda env update -n base --file /root/base.yml 
+#RUN cat /root/Rprofile-tmp > /usr/local/lib/R/etc/Rprofile.site
+#RUN cat /root/Renviron-tmp > /usr/local/lib/R/etc/Renviron
+
+
+
+
+

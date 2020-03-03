@@ -1,0 +1,11 @@
+options(repos = c(BIOWULF = "file:///data/swamyvs/CRAN_BIOC_singularity/R/"), 
+        BIOCONDUCTOR_ONLINE_VERSION_DIAGNOSIS = FALSE,
+        BioC_mirror = 'file:///data/swamyvs/CRAN_BIOC_singularity/bioc/',
+        download.file.method = 'libcurl')
+
+# Configure httr to perform out-of-band authentication if HTTR_LOCALHOST
+# is not set since a redirect to localhost may not work depending upon
+# where this Docker container is running.
+if(is.na(Sys.getenv("HTTR_LOCALHOST", unset=NA))) {
+  options(httr_oob_default = TRUE)
+}
