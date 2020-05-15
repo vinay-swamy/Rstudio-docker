@@ -381,3 +381,8 @@ EXPOSE 8787
 ## automatically link a shared volume for kitematic users
 VOLUME /home/rstudio/kitematic
 CMD ["/init"]
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  gdal-bin \
+  libgdal-dev
