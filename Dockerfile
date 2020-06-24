@@ -386,3 +386,26 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   gdal-bin \
   libgdal-dev
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  texlive-full
+#install apache arrow (the additions to sources.list.d are required for nvidia tk which is required for plasma)
+RUN apt update \
+  && tee /etc/apt/sources.list.d/backports.list <<APT_LINE \
+  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short)-backports main" |  tee /etc/apt/sources.list.d/backports.list \
+  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short) contrib" | tee /etc/apt/sources.list.d/contrib.list \
+  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short) non-free" | tee /etc/apt/sources.list.d/non-free.list \
+  && wget https://apache.bintray.com/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-archive-keyring-latest-$(lsb_release --codename --short).deb \
+  && apt install -y -V ./apache-arrow-archive-keyring-latest-$(lsb_release --codename --short).deb \
+  && apt update \
+  && apt install -y -V -f \
+    libarrow-dev \
+    libarrow-glib-dev \
+    libarrow-dataset-dev \
+    libarrow-flight-dev \
+    libplasma-dev \
+    libplasma-glib-dev \
+    libgandiva-dev \
+    libgandiva-glib-dev \
+    libparquet-dev \
+    libparquet-glib-dev
