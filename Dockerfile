@@ -390,22 +390,40 @@ RUN apt-get update \
 RUN apt-get update && apt-get install -y --no-install-recommends \
   texlive-full
 #install apache arrow (the additions to sources.list.d are required for nvidia tk which is required for plasma)
-RUN apt update \
-  && tee /etc/apt/sources.list.d/backports.list <<APT_LINE \
-  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short)-backports main" |  tee /etc/apt/sources.list.d/backports.list \
-  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short) contrib" | tee /etc/apt/sources.list.d/contrib.list \
-  && echo "deb http://deb.debian.org/debian $(lsb_release --codename --short) non-free" | tee /etc/apt/sources.list.d/non-free.list \
-  && wget https://apache.bintray.com/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-archive-keyring-latest-$(lsb_release --codename --short).deb \
-  && apt install -y -V ./apache-arrow-archive-keyring-latest-$(lsb_release --codename --short).deb \
-  && apt update \
-  && apt install -y -V -f \
-    libarrow-dev \
-    libarrow-glib-dev \
-    libarrow-dataset-dev \
-    libarrow-flight-dev \
-    libplasma-dev \
-    libplasma-glib-dev \
-    libgandiva-dev \
-    libgandiva-glib-dev \
-    libparquet-dev \
-    libparquet-glib-dev
+
+RUN rm -vfr /var/lib/apt/lists/*
+
+RUN apt-get update --fix-missing && apt-get install -y -V \
+  apt-transport-https curl gnupg lsb-release
+
+RUN printf "deb http://deb.debian.org/debian $(lsb_release --codename --short)-backports main" > /etc/apt/sources.list.d/backports.list
+
+RUN curl --output /usr/share/keyrings/apache-arrow-keyring.gpg https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg
+
+RUN printf "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main \ndeb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main" > /etc/apt/sources.list.d/apache-arrow.list
+
+RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+
+RUN printf "deb http://apt.llvm.org/$(lsb_release --codename --short)/ llvm-toolchain-$(lsb_release --codename --short)-7 main\ndeb-src http://apt.llvm.org/$(lsb_release --codename --short)/ llvm-toolchain-$(lsb_release --codename --short)-7 main" > /etc/apt/sources.list.d/llvm.list
+
+RUN apt-get update && apt-get install -y -V \
+  software-properties-common && \
+  apt-add-repository contrib && \
+  apt-add-repository non-free && \
+  apt-get update && \
+  apt-get install --no-install-recommends -y -V \
+  libarrow-dev \
+  libarrow-glib-dev \
+  libplasma-dev \
+  libplasma-glib-dev \
+  libgandiva-dev \
+  libgandiva-glib-dev \
+  libparquet-dev \
+  libparquet-glib-dev
+
+# RUN Rscript -e 'library(Rcpp);sessionInfo();source("https://raw.githubusercontent.com/apache/arrow/master/r/R/install-arrow.R"); install_arrow(nightly=T, repos="https://cloud.r-project.org/")'
+RUN Rscript -e 'remotes::install_github("RcppCore/Rcpp", dependencies = T, repos="https://cloud.r-project.org/") ;source("https://raw.githubusercontent.com/apache/arrow/master/r/R/install-arrow.R"); install_arrow(nightly=T, repos="https://cloud.r-project.org/") ; library(Rcpp);sessionInfo();'
+
+
+RUN apt-get update && apt-get install -y -V libboost-all-dev 
+RUN Rscript -e "install.packages(c('flextable', 'webshot'), repos='https://cloud.r-project.org/'); webshot::install_phantomjs(); "
