@@ -2,6 +2,21 @@ options(repos = c(BIOWULF = "file:///data/swamyvs/CRAN_BIOC_singularity/R/"),
         BIOCONDUCTOR_ONLINE_VERSION_DIAGNOSIS = FALSE,
         BioC_mirror = 'file:///data/swamyvs/CRAN_BIOC_singularity/bioc/',
         download.file.method = 'libcurl')
+set_lib_paths <- function(lib_vec) {
+  #https://stackoverflow.com/questions/15217758/remove-a-library-from-libpaths-permanently-without-rprofile-site
+  #how to reset libPaths in Rprofile. Changing in Renviron is tricky becasue it makes you mess with the R_HOME 
+  #variable which cna cause problems later on. This is the better way to do it.
+  #https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html 
+  #Rprofile is sourced *after* the 
+  lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
+  shim_fun <- .libPaths
+  shim_env <- new.env(parent = environment(shim_fun))
+  shim_env$.Library <- character()
+  shim_env$.Library.site <- character()
+  environment(shim_fun) <- shim_env
+  shim_fun(lib_vec)
+}
+set_lib_paths(c('/data/swamyvs/Rlib_singualrity/', '/usr/local/lib/R/site-library'))
 
 # Configure httr to perform out-of-band authentication if HTTR_LOCALHOST
 # is not set since a redirect to localhost may not work depending upon
