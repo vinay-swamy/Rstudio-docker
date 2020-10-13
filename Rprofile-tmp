@@ -16,7 +16,7 @@ set_lib_paths <- function(lib_vec) {
   environment(shim_fun) <- shim_env
   shim_fun(lib_vec)
 }
-set_lib_paths(c('/data/swamyvs/Rlib_singualrity/', '/usr/local/lib/R/site-library'))
+set_lib_paths(c('/data/swamyvs/Rlib_singualrity/', '/usr/local/lib/R/site-library', '/usr/local/lib/R/library'))
 
 # Configure httr to perform out-of-band authentication if HTTR_LOCALHOST
 # is not set since a redirect to localhost may not work depending upon

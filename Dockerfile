@@ -130,7 +130,7 @@ RUN conda init
 RUN conda env update -n base --file /tmp/base.yml 
 
 
-RUN echo RECOPY
+RUN echo RECOPY3
 COPY add_shiny.sh /etc/cont-init.d/add
 COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
 COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
@@ -138,3 +138,7 @@ COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
 COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
 COPY Rprofile-tmp /usr/local/lib/
 COPY Renviron-tmp /usr/local/lib/
+
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends libboost-dev  libboost-filesystem1.71-dev libboost-graph1.71-dev libboost-system1.71-dev
