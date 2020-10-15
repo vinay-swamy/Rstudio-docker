@@ -28,7 +28,6 @@ RUN apt-get update \
 	## Basic deps
 	gdb \
 	libxml2-dev \
-	#python-pip \
 	libz-dev \
 	liblzma-dev \
 	libbz2-dev \
@@ -47,15 +46,11 @@ RUN apt-get update \
 	libfftw3-dev \
 	libopenbabel-dev \
 	libopenmpi-dev \
-	#libexempi8 \
 	libxt-dev \
-	#libgdal-dev \
-	#libjpeg-turbo-dev \
 	libcairo2-dev \
 	libtiff5-dev \
 	libreadline-dev \
 	libgsl0-dev \
-	#libgslcblas0 \
 	libgtk2.0-dev \
 	libgl1-mesa-dev \
 	libglu1-mesa-dev \
@@ -141,4 +136,15 @@ COPY Renviron-tmp /usr/local/lib/
 
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends libboost-dev  libboost-filesystem1.71-dev libboost-graph1.71-dev libboost-system1.71-dev
+	&& apt-get install -y --no-install-recommends libboost-dev  libboost-filesystem1.71-dev libboost-graph1.71-dev libboost-system1.71-dev libboost-all-dev
+
+## dependencies for sf package
+RUN apt-get install -y  software-properties-common && \
+	apt-get update && add-apt-repository ppa:ubuntugis/ubuntugis-unstable && \
+	apt-get update && \
+	apt-get install -y gdal-bin \
+	libmysqlclient-dev \
+	default-libmysqlclient-dev \
+	libgdal-dev \
+	proj-bin \
+	libgeos-dev
