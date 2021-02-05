@@ -1,7 +1,3 @@
-options(repos = c(BIOWULF = "file:///data/swamyvs/CRAN_BIOC_singularity/R/"), 
-        BIOCONDUCTOR_ONLINE_VERSION_DIAGNOSIS = FALSE,
-        BioC_mirror = 'file:///data/swamyvs/CRAN_BIOC_singularity/bioc/',
-        download.file.method = 'libcurl')
 set_lib_paths <- function(lib_vec) {
   #https://stackoverflow.com/questions/15217758/remove-a-library-from-libpaths-permanently-without-rprofile-site
   #how to reset libPaths in Rprofile. Changing in Renviron is tricky becasue it makes you mess with the R_HOME 

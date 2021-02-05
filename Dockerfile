@@ -1,10 +1,9 @@
-FROM rocker/r-ver:4.0.2
+FROM rocker/r-ver:4.0.3
 
 # Modified from https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_rstudio_devel
 # commit: ed22626
 
-ENV S6_VERSION=v1.21.7.0
-# Changed rstudio version from "latest" TO 1.2.5042
+ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=1.2.5042
 ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
@@ -125,16 +124,6 @@ RUN conda init
 RUN conda env update -n base --file /tmp/base.yml 
 
 
-RUN echo RECOPY3
-COPY add_shiny.sh /etc/cont-init.d/add
-COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
-COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
-COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
-COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
-COPY Rprofile-tmp /usr/local/lib/
-COPY Renviron-tmp /usr/local/lib/
-
-
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends libboost-dev  libboost-filesystem1.71-dev libboost-graph1.71-dev libboost-system1.71-dev libboost-all-dev
 
@@ -148,3 +137,15 @@ RUN apt-get install -y  software-properties-common && \
 	libgdal-dev \
 	proj-bin \
 	libgeos-dev
+
+RUN Rscript --vanilla -e 'install.packages("Cairo", lib = "/usr/local/lib/R/library", repos="https://cloud.r-project.org/")'
+#"/usr/local/lib/R/site-library"  "/usr/local/lib/R/library"
+COPY add_shiny.sh /etc/cont-init.d/add
+COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
+COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
+COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
+COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
+COPY Rprofile-tmp /usr/local/lib/
+COPY Renviron-tmp /usr/local/lib/
+
+RUN echo DONE

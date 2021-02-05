@@ -43,7 +43,6 @@ R_SYSTEM_ABI='linux,gcc,gxx,gfortran,gfortran'
 R_STRIP_SHARED_LIB=${R_STRIP_SHARED_LIB-'strip --strip-unneeded'}
 R_STRIP_STATIC_LIB=${R_STRIP_STATIC_LIB-'strip --strip-debug'}
 
-#R_LIBS_USER=${R_LIBS_USER-'~/Library/R/3.6/library'}
 
 ### Local Variables: ***
 ### mode: sh ***
@@ -53,4 +52,5 @@ R_STRIP_STATIC_LIB=${R_STRIP_STATIC_LIB-'strip --strip-debug'}
 ## I edited these so we can create a writeable path in singularity
 R_LIBS_USER=${R_LIBS_USER-'/usr/local/lib/R/site-library'}
 R_LIBS=/data/swamyvs/Rlib_singualrity/
+RETICULATE_PYTHON='/data/swamyvs/anaconda3/bin/python'
 PATH=/usr/lib/rstudio-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin
