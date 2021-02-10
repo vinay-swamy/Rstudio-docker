@@ -140,12 +140,19 @@ RUN apt-get install -y  software-properties-common && \
 
 RUN Rscript --vanilla -e 'install.packages("Cairo", lib = "/usr/local/lib/R/library", repos="https://cloud.r-project.org/")'
 #"/usr/local/lib/R/site-library"  "/usr/local/lib/R/library"
+
+RUN Rscript -e 'install.packages("BiocManager")'
+RUN Rscript -e 'BiocManager::install("devtools", update=F, ask=F)'
+
+COPY Renviron-tmp /usr/local/lib/
+COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
+RUN Rscript -e 'devtools::install_github("vinay-swamy/RBedtools")'
+
+
 COPY add_shiny.sh /etc/cont-init.d/add
 COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
 COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
 COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
-COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
 COPY Rprofile-tmp /usr/local/lib/
-COPY Renviron-tmp /usr/local/lib/
 
 RUN echo DONE
