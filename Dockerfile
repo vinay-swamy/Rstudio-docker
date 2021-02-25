@@ -1,7 +1,7 @@
 FROM rocker/r-ver:4.0.3
 
 # Modified from https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_rstudio_devel
-# commit: ed22626
+# commit: ed22626. DO NOT CHANGE( wont work with singularity)
 
 ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=1.2.5042
