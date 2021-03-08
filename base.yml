@@ -1,7 +1,0 @@
-name: base
-channels:
-  - bioconda
-dependencies:
- - bedtools=2.27.1
- - samtools=1.9
-
