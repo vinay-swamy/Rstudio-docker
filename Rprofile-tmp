@@ -1,9 +1,9 @@
 set_lib_paths <- function(lib_vec) {
-  #https://stackoverflow.com/questions/15217758/remove-a-library-from-libpaths-permanently-without-rprofile-site
-  #how to reset libPaths in Rprofile. Changing in Renviron is tricky becasue it makes you mess with the R_HOME 
-  #variable which cna cause problems later on. This is the better way to do it.
-  #https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html 
-  #Rprofile is sourced *after* the 
+  # https://stackoverflow.com/questions/15217758/remove-a-library-from-libpaths-permanently-without-rprofile-site
+  # how to reset libPaths in Rprofile. Changing in Renviron is tricky becasue it makes you mess with the R_HOME 
+  # variable which cna cause problems later on. This is the better way to do it.
+  # https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html 
+  # Rprofile is sourced *after* the Renviron 
   lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
   shim_fun <- .libPaths
   shim_env <- new.env(parent = environment(shim_fun))

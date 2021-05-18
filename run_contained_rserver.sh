@@ -2,10 +2,7 @@
 set -ue
 PORT=$1
 instancename=$(openssl rand -hex 8)
-
-## Each Rstudio-server instance will need to be contained inside its own folder
-## by default, this script can make a new folder to set as the home directory each time/
-## Or, pass a directory to $2 and that folder will be used 
+# for some reason in current build of container no python version can be found 
 
 if [ -z ${2+x} ]
 then
@@ -17,7 +14,7 @@ else
 fi
 module load singularity
 container="/data/swamyvs/singularity_images/rstudio-fromscratch-latest.sif"
-# copy over Rstudio settings
+# copy over Rstudio settings 
 RstudioSettings='/home/swamyvs/Rstudio-default/monitored/'
 mkdir -p $rstmpdir/.rstudio/
 mkdir -p $rstmpdir/.R/
@@ -25,13 +22,21 @@ cp -r /home/swamyvs/Rstudio-default/monitored/ $rstmpdir/.rstudio/
 cp -r /home/swamyvs/R-default/rstudio $rstmpdir/.R/
 cp -r /home/swamyvs/R-default/snippets $rstmpdir/.R/
 
+# make /var/* folders (required for Rstudio 1.3+)
+mkdir -p $rstmpdir/var/lib/
+mkdir -p $rstmpdir/var/run/
+mkdir -p $rstmpdir/tmp/
 
-## Singularity instance can isolate individual isntances of a container with a separate home/tmpdir for each instance. This allows us to have multiple rstudio-server sessions up and running
+# use a singularity instance  + contain to rstmpdir to allow for multiple R server instances
 singularity instance start \
   --contain \
   -H "$rstmpdir" \
   --workdir "$rstmpdir" \
-  -B /data/swamyvs/,/data/OGVFB_BG/ \
+  --bind="/data/swamyvs/" \
+  --bind="/data/OGVFB_BG/"  \
+  --bind="$rstmpdir/var/lib:/var/lib/rstudio-server" \
+  --bind="$rstmpdir/var/run:/var/run/rstudio-server" \
+  --bind="$rstmpdir/tmp:/tmp" \
   "$container" \
   $instancename
 

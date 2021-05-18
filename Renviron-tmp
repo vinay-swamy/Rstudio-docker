@@ -49,7 +49,7 @@ R_STRIP_STATIC_LIB=${R_STRIP_STATIC_LIB-'strip --strip-debug'}
 ### sh-indentation: 2 ***
 ### End: ***
 
-## I edited these so we can create a writeable path in singularity
+## CHANGEME: I edited these so we can create a writeable path in singularity
 R_LIBS_USER=${R_LIBS_USER-'/usr/local/lib/R/site-library'}
 R_LIBS=/data/swamyvs/Rlib_singualrity/
 RETICULATE_PYTHON='/data/swamyvs/anaconda3/bin/python'
