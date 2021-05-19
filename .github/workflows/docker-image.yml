@@ -14,7 +14,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag vinayswamy/rstudio-example:latest
-    - name: push to Dockerhub
-      run: docker push vinayswamy/rstudio-example:latest
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: vinayswamy
+        password: Bloomsolace!2
+    - name: Push to Docker Hub
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags:  vinayswamy/rstudio-example:latest
