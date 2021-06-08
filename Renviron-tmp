@@ -53,4 +53,4 @@ R_STRIP_STATIC_LIB=${R_STRIP_STATIC_LIB-'strip --strip-debug'}
 R_LIBS_USER=${R_LIBS_USER-'/usr/local/lib/R/site-library'}
 R_LIBS=/data/swamyvs/Rlib_singualrity/
 RETICULATE_PYTHON='/data/swamyvs/anaconda3/bin/python'
-PATH=/usr/lib/rstudio-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin
+PATH=/usr/lib/rstudio-server/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/conda/bin:/home/bin/

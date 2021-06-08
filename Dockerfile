@@ -139,6 +139,8 @@ RUN apt-get install -y  software-properties-common && \
 	libgeos-dev
 
 RUN Rscript --vanilla -e 'install.packages("Cairo", lib = "/usr/local/lib/R/library", repos="https://cloud.r-project.org/")'
+RUN Rscript --vanilla -e 'install.packages("tinytex", lib = "/usr/local/lib/R/library", repos="https://cloud.r-project.org/")'
+RUN Rscript --vanilla -e 'tinytex::install_tinytex()'
 #"/usr/local/lib/R/site-library"  "/usr/local/lib/R/library"
 
 RUN Rscript -e 'install.packages("BiocManager")'
