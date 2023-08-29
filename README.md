@@ -9,8 +9,10 @@ singularity pull rstudio_img.sif docker://rocker/Rstudio
 ```
 
 However, directly using rocker's containers doesn't give the full features of Rstudio because
-- you cannot install packages through the standard `install.packages` because the container itself is not writable. A external library collection on the server's filesystem can be used, but theres no way to add this new path to the Rprofile/Renvironments, and so when installing and loading packages, you'll have to always manually specify the path
+- you cannot install packages through the standard `install.packages` because the container itself is not writable. A external library collection on the server's filesystem can be used, and these need to to be set in `Rprofile-tmp` and `Renivron-tmp` files. For example in `Rprofile-tmp` above, i set the default library to be  `/manitou/pmg/users/vss2134/RLib_singularity/ `, a location on my HPC. 
 
-- Secondly(and more annoyingly) you can only have one instance of Rstudio server at a time.
+- you can only have one instance of Rstudio server at a time. This can be changes if you configure singularity to isolate the home directory, but this will cause you to lose any setting you have previouslt set in Rstudio. 
+
+- connecting python via `reticulate` is challenging. The simplest way to is to hardcode the RETICULATE_PYTHON environment variable in the `Renviron-tmp` file, then rebuild the container. 
 
 

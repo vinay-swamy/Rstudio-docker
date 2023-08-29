@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.0.3
+FROM --platform=linux/amd64 rocker/r-ver:4.0.3
 
 # Modified from https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/Dockerfile_rstudio_devel
 # commit: ed22626
@@ -18,12 +18,12 @@ RUN Rscript -e 'BiocManager::install("devtools", update=F, ask=F)'
 RUN Rscript -e 'devtools::install_github("mvuorre/exampleRPackage")'
 
 
-# COPY Renviron-tmp /usr/local/lib/
-# COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
-# COPY add_shiny.sh /etc/cont-init.d/add
-# COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
-# COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
-# COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
-# COPY Rprofile-tmp /usr/local/lib/
+COPY Renviron-tmp /usr/local/lib/Renviron
+COPY Renviron-tmp /usr/local/lib/R/etc/Renviron
+COPY add_shiny.sh /etc/cont-init.d/add
+COPY disable_auth_rserver.conf /etc/rstudio/disable_auth_rserver.conf
+COPY pam-helper.sh /usr/lib/rstudio-server/bin/pam-helper
+COPY Rprofile-tmp /usr/local/lib/R/etc/Rprofile.site
+COPY Rprofile-tmp /usr/local/lib/Rprofile
 
 RUN echo DONE
