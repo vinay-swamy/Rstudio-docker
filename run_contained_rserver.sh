@@ -6,21 +6,23 @@ instancename=$(openssl rand -hex 8)
 
 if [ -z ${2+x} ]
 then
-      rstmpdir="/data/swamyvs/stmp/${instancename}"
+      rstmpdir="/manitou/pmg/users/vss2134/${instancename}"
       echo "tmpdir is not specified. Using ${rstmpdir}"
       mkdir -p $rstmpdir
 else
     rstmpdir=$2
 fi
 module load singularity
-container="/data/swamyvs/singularity_images/rstudio-fromscratch-latest.sif"
+container=$3
 # copy over Rstudio settings 
-RstudioSettings='/home/swamyvs/Rstudio-default/monitored/'
+### this assumes you have a Rstudio default settings folder. 
+### To make one, you'll need to run Rstudio once using the `run_rserver_script`, then copy ~/.rstudio to ~/Rstudio-default
+RstudioSettings='/manitou-home/home/vss2134/Rstudio-default/monitored/'
 mkdir -p $rstmpdir/.rstudio/
 mkdir -p $rstmpdir/.R/
-cp -r /home/swamyvs/Rstudio-default/monitored/ $rstmpdir/.rstudio/
-cp -r /home/swamyvs/R-default/rstudio $rstmpdir/.R/
-cp -r /home/swamyvs/R-default/snippets $rstmpdir/.R/
+cp -r /manitou-home/home/vss2134/Rstudio-default/monitored/ $rstmpdir/.rstudio/
+cp -r /manitou-home/home/vss2134/R-default/rstudio $rstmpdir/.R/
+cp -r /manitou-home/home/vss2134/R-default/snippets $rstmpdir/.R/
 
 # make /var/* folders (required for Rstudio 1.3+)
 mkdir -p $rstmpdir/var/lib/
@@ -32,8 +34,8 @@ singularity instance start \
   --contain \
   -H "$rstmpdir" \
   --workdir "$rstmpdir" \
-  --bind="/data/swamyvs/" \
-  --bind="/data/OGVFB_BG/"  \
+  --bind="/manitou/pmg/users/vss2134" \
+  --bind="/pmglocal" \
   --bind="$rstmpdir/var/lib:/var/lib/rstudio-server" \
   --bind="$rstmpdir/var/run:/var/run/rstudio-server" \
   --bind="$rstmpdir/tmp:/tmp" \

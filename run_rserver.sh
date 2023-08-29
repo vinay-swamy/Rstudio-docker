@@ -1,15 +1,20 @@
 #!/bin/bash 
 #set -eui pipefail;
-PORT=$1
+PORT=$1 # port on Manitou
+SIF=$2 # path to singularity image
 module load singularity
-rm ~/.rstudio/sessions/* -rf
 
-## EDIT 05.18.2021: need the rserver-tmp binds for Rstudio 1.3+
-echo " go to 127.0.0.1:${PORT}" && singularity exec  \
-    --bind="/data/swamyvs/" \
-    --bind="/data/OGVFB_BG/"  \
-    --bind="rserver-tmp/var/lib:/var/lib/rstudio-server" \
-    --bind="rserver-tmp/var/run:/var/run/rstudio-server" \
-    --bind="rserver-tmp/tmp:/tmp" \
-    /data/swamyvs/singularity_images/rstudio-fromscratch-latest.sif  rserver --www-port $PORT
-rm ~/.rstudio/sessions/* -rf
+rm ~/.rstudio/sessions/* -rf # clear previous session file 
+mkdir -p /manitou-home/home/vss2134/rserver-tmp/tmp
+mkdir -p /manitou-home/home/vss2134/rserver-tmp/var/lib
+mkdir -p /manitou-home/home/vss2134/rserver-tmp/var/run
+## need the rserver-tmp binds for things to work properly
+singularity exec  \
+    --bind="/manitou/pmg/users/vss2134" \
+    --bind="/pmglocal" \
+    --bind="/manitou-home/home/vss2134/rserver-tmp/var/lib:/var/lib/rstudio-server" \
+    --bind="/manitou-home/home/vss2134/rserver-tmp/var/run:/var/run/rstudio-server" \
+    --bind="/manitou-home/home/vss2134/rserver-tmp/tmp:/tmp" \
+    $SIF  rserver --www-port $PORT
+
+## ctrl-c to stop server
