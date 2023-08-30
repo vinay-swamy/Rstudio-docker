@@ -3,7 +3,7 @@
 To run Rstudio on singulartiy on manitou, you need to first build the container. You'll need docker installed on your local machine to do this. These containers are built on top of [rocker's] R docker containers. 
 
 
-You need to edit the following files, and appropriately change the paths to match your own configuration:
+First, fork and clone this repo. You need to edit the following files, and appropriately change the paths to match your own configuration:
 - `Rprofile-tmp`: this file is copied to the container's `/home/rstudio/.Rprofile` and is used to set the default library location.
 - `Renviron-tmp`: this file is copied to the container's `/home/rstudio/.Renviron` and is used to set the default python location.
 - `install_packages_R_singularity.py` :  You cannot use the regular `install.packages` function in Rstudio bc the way the container is set up. Instead, you need to use this script to install packages. Change the paths here
@@ -19,7 +19,7 @@ docker push vinayswamy/rstudiodocker:latest
 
 ```
 
-Then on Manitou, request a compute node, load singularity and pull the container
+Then on Manitou, request a compute node, load singularity, clone this repo, and pull the container
 ```
 module load singularity 
 singularity pull rstudio.sif docker://vinayswamy/rstudiodocker:latest
